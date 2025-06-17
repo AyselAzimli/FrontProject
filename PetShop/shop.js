@@ -4,13 +4,16 @@ let productsList = [];
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const basket = document.getElementById("basket");
-  const basketIcon = document.getElementById("basketIcon");
-  basket.innerHTML = "";
+  const basket = document.getElementById("basket");//sebetin icidi div 
+  const basketIcon = document.getElementById("basketIcon");//ustune basanda bas vermelidir her sey
 
-  basketIcon.addEventListener("click", function (event) {
+  const productContainer = document.getElementById("productCont");
+
+
+
+  basketIcon.addEventListener("click", (event) => {
     event.preventDefault();
-
+    basket.innerHTML = "";
     let html = `
       <div class="order-md-last">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -44,8 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
   fetch("https://fakestoreapi.com/products")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      const productContainer = document.getElementById("productCont");
+
       productContainer.innerHTML = "";
 
       data.forEach(product => {
@@ -59,12 +61,12 @@ document.addEventListener("DOMContentLoaded", function () {
             category: product.category,
             image: product.image,
             rating: {
-              rate: product.rate,
-              count: product.count
+              rate: product.rating.rate,
+              count: product.rating.count
             }
           }
         );
-        console.log()
+
         productContainer.innerHTML += `
         <div class="card position-relative">
                 <a href="single-product.html"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
@@ -82,9 +84,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h3 class="secondary-font text-primary">$ ${product.price}</h3>
 
                     <div class="d-flex flex-wrap mt-3">
+                    <button class="btn btn-outline-secondary" id="${product.id}" type="button" aria-label="Search">
                        <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3" data-id="${product.id}">
                         <h5 class="text-uppercase m-0">Add to Cart</h5>
                       </a>
+                      </button>
                       <a href="#" class="btn-wishlist px-4 pt-3 ">
                         <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
                       </a>
@@ -93,57 +97,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
                   </div>`
 
-        document.querySelectorAll(".btn-cart").forEach(button => {
-          button.addEventListener("click", function (event) {
-            event.preventDefault();
-            cart.push({
-              id: product.id,
-              title: product.title,
-              price: product.price
-            });
-            cartTotal += product.price;
-            console.log(cart);
-            console.log(cartTotal);
-            const id = this.getAttribute("data-id");
-            console.log("Clicked on:", id);
+      });
 
-            console.log(product.count);
+      document.querySelectorAll(".btn-cart").forEach(button => {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          const id = this.getAttribute("data-id"); // Get the product ID from button
+          const product = productsList.find(p => p.id == id); // Find product by ID
+          cart.push({
+            id: product.id,
+            title: product.title,
+            price: product.price
           });
+          cartTotal += product.price;
+
+          console.log(cartTotal);
         });
       });
     });
-});
 
-function CreateRateElement(rate) {
-  let rateElements = '';
-  let primary = Math.floor(rate);
-  let dif = rate - primary;
-  for (let i = 0; i < primary; i++) {
-    rateElements += '<iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>';
-  }
-
-  if (dif > 0) {
-    rateElements += '<iconify-icon icon="clarity:half-star-solid" class="text-primary"></iconify-icon>';
-  }
-
-  let empty = 5 - Math.ceil(rate);
-  for (let i = 0; i < empty; i++) {
-    rateElements += '<iconify-icon icon="clarity:star-line" class="text-primary"></iconify-icon>';
-  }
-  return rateElements;
-};
-
-
-//search bar hissesini yazaq ;/
-document.addEventListener("DOMContentLoaded", function () {
-  const productContainer = document.getElementById("productCont");
-
-  // Your fetch and render products code here...
-
-  const searchMark = document.getElementById("category");
+  const searchMark = document.getElementById("searchMark");
   const inputSearchBar = document.getElementById("inputSearchBar");
 
-  searchMark.addEventListener("click", function (event) {
+  searchMark.addEventListener("click", (event) => {
     event.preventDefault();
 
     const inputValue = inputSearchBar.value.toLowerCase();
@@ -177,6 +153,70 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+function CreateRateElement(rate) {
+  let rateElements = '';
+  let primary = Math.floor(rate);
+  let dif = rate - primary;
+  for (let i = 0; i < primary; i++) {
+    rateElements += '<iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>';
+  }
+
+  if (dif > 0) {
+    rateElements += '<iconify-icon icon="clarity:half-star-solid" class="text-primary"></iconify-icon>';
+  }
+
+  let empty = 5 - Math.ceil(rate);
+  for (let i = 0; i < empty; i++) {
+    rateElements += '<iconify-icon icon="clarity:star-line" class="text-primary"></iconify-icon>';
+  }
+  return rateElements;
+};
+
+
+//search bar hissesini yazaq ;/
+// document.addEventListener("DOMContentLoaded", function () {
+//   const productContainer = document.getElementById("productCont");
+
+//   // Your fetch and render products code here...
+
+//   const searchMark = document.getElementById("searchMark  ");
+//   const inputSearchBar = document.getElementById("inputSearchBar");
+
+//   searchMark.addEventListener("click", function (event) {
+//     event.preventDefault();
+
+//     const inputValue = inputSearchBar.value.toLowerCase();
+//     productContainer.innerHTML = "";  // Now productContainer is defined
+
+//     productsList.forEach(product => {
+//       if (product.title.toLowerCase().includes(inputValue)) {
+//         productContainer.innerHTML += `
+//           <div class="card position-relative">
+//             <a href="single-product.html"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
+//             <div class="card-body p-0">
+//               <a href="single-product.html">
+//                 <h3 class="card-title pt-4 m-0">${product.title}</h3>
+//               </a>
+//               <div class="card-text">
+//                 ${CreateRateElement(product.rating.rate)}
+//                 <span class="rating secondary-font">${product.rating.rate}</span>
+//                 <h3 class="secondary-font text-primary">$ ${product.price}</h3>
+//                 <div class="d-flex flex-wrap mt-3">
+//                   <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3" data-id="${product.id}">
+//                     <h5 class="text-uppercase m-0">Add to Cart</h5>
+//                   </a>
+//                   <a href="#" class="btn-wishlist px-4 pt-3 ">
+//                     <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+//                   </a>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>`;
+//       }
+//     });
+//   });
+// });
 
 
 
