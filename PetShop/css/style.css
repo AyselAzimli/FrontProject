@@ -406,7 +406,12 @@ a.categories-item:hover iconify-icon.category-icon {
 }
 
 
-
+#productCont {
+  display: inline-flex;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
 /* pet clothing */
 .card {
   --bs-card-inner-border-radius: none;

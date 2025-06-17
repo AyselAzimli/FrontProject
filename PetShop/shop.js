@@ -3,6 +3,9 @@ let cartTotal = 0;//sebetin umumi total meblegi
 let productsList = [];
 
 document.addEventListener("DOMContentLoaded", function () {
+  loadCartFromLocalStorage();
+  const filterLess50=document.getElementById("lessThan50");
+  const filterMore50=document.getElementById("moreThan50");
 
   const basket = document.getElementById("basket");//sebetin icidi div 
   const basketIcon = document.getElementById("basketIcon");//ustune basanda bas vermelidir her sey
@@ -48,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((res) => res.json())
     .then((data) => {
 
-      productContainer.innerHTML = "";
+      productContainer.innerHTML = " ";
 
       data.forEach(product => {
 
@@ -84,11 +87,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h3 class="secondary-font text-primary">$ ${product.price}</h3>
 
                     <div class="d-flex flex-wrap mt-3">
-                    <button class="btn btn-outline-secondary" id="${product.id}" type="button" aria-label="Search">
                        <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3" data-id="${product.id}">
                         <h5 class="text-uppercase m-0">Add to Cart</h5>
                       </a>
-                      </button>
+                      
                       <a href="#" class="btn-wishlist px-4 pt-3 ">
                         <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
                       </a>
@@ -112,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
           cartTotal += product.price;
 
           console.log(cartTotal);
+          saveCartToLocalStorage();
         });
       });
     });
@@ -151,6 +154,91 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>`;
       }
     });
+    saveCartToLocalStorage();
+  });
+
+
+  filterLess50.addEventListener('click',(event) =>{
+      event.preventDefault();
+      productContainer.innerHTML = " ";
+      let emptyString2="";
+      productsList.forEach(product =>{
+        if(product.price<=50){
+          emptyString2+=`
+        <div class="card position-relative">
+                <a href="single-product.html"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
+                <div class="card-body p-0">
+                  <a href="single-product.html">
+                    <h3 class="card-title pt-4 m-0">${product.title}</h3>
+                  </a>
+
+                  <div class="card-text">
+                  ${CreateRateElement(product.rating.rate)}
+                    <span class="rating secondary-font">
+                      
+                      ${product.rating.rate}</span>
+
+                    <h3 class="secondary-font text-primary">$ ${product.price}</h3>
+
+                    <div class="d-flex flex-wrap mt-3">
+                       <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3" data-id="${product.id}">
+                        <h5 class="text-uppercase m-0">Add to Cart</h5>
+                      </a>
+                      
+                      <a href="#" class="btn-wishlist px-4 pt-3 ">
+                        <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+                      </a>
+                    </div>
+
+
+                  </div>`;
+        }
+      });
+      productContainer.innerHTML=emptyString2;
+      saveCartToLocalStorage();
+
+  });
+
+
+  filterMore50.addEventListener('click',(event) =>{
+      event.preventDefault();
+      productContainer.innerHTML = " ";
+      let emptyString3="";
+      productsList.forEach(product =>{
+        if(Number(product.price)>50){
+          emptyString3+=`
+        <div class="card position-relative">
+                <a href="single-product.html"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
+                <div class="card-body p-0">
+                  <a href="single-product.html">
+                    <h3 class="card-title pt-4 m-0">${product.title}</h3>
+                  </a>
+
+                  <div class="card-text">
+                  ${CreateRateElement(product.rating.rate)}
+                    <span class="rating secondary-font">
+                      
+                      ${product.rating.rate}</span>
+
+                    <h3 class="secondary-font text-primary">$ ${product.price}</h3>
+
+                    <div class="d-flex flex-wrap mt-3">
+                       <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3" data-id="${product.id}">
+                        <h5 class="text-uppercase m-0">Add to Cart</h5>
+                      </a>
+                      
+                      <a href="#" class="btn-wishlist px-4 pt-3 ">
+                        <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+                      </a>
+                    </div>
+
+
+                  </div>`;
+        }
+      });
+      productContainer.innerHTML=emptyString3;
+      saveCartToLocalStorage();
+
   });
 });
 
@@ -173,52 +261,25 @@ function CreateRateElement(rate) {
   return rateElements;
 };
 
-
-//search bar hissesini yazaq ;/
-// document.addEventListener("DOMContentLoaded", function () {
-//   const productContainer = document.getElementById("productCont");
-
-//   // Your fetch and render products code here...
-
-//   const searchMark = document.getElementById("searchMark  ");
-//   const inputSearchBar = document.getElementById("inputSearchBar");
-
-//   searchMark.addEventListener("click", function (event) {
-//     event.preventDefault();
-
-//     const inputValue = inputSearchBar.value.toLowerCase();
-//     productContainer.innerHTML = "";  // Now productContainer is defined
-
-//     productsList.forEach(product => {
-//       if (product.title.toLowerCase().includes(inputValue)) {
-//         productContainer.innerHTML += `
-//           <div class="card position-relative">
-//             <a href="single-product.html"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
-//             <div class="card-body p-0">
-//               <a href="single-product.html">
-//                 <h3 class="card-title pt-4 m-0">${product.title}</h3>
-//               </a>
-//               <div class="card-text">
-//                 ${CreateRateElement(product.rating.rate)}
-//                 <span class="rating secondary-font">${product.rating.rate}</span>
-//                 <h3 class="secondary-font text-primary">$ ${product.price}</h3>
-//                 <div class="d-flex flex-wrap mt-3">
-//                   <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3" data-id="${product.id}">
-//                     <h5 class="text-uppercase m-0">Add to Cart</h5>
-//                   </a>
-//                   <a href="#" class="btn-wishlist px-4 pt-3 ">
-//                     <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
-//                   </a>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>`;
-//       }
-//     });
-//   });
-// });
+function saveCartToLocalStorage() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("cartTotal", cartTotal.toString());
+}
 
 
+
+function loadCartFromLocalStorage() {
+  const storedCart = localStorage.getItem("cart");
+  const storedTotal = localStorage.getItem("cartTotal");
+
+  if (storedCart) {
+    cart = JSON.parse(storedCart);
+  }
+
+  if (storedTotal) {
+    cartTotal = parseFloat(storedTotal);
+  }
+}
 
 
 
