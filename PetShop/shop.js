@@ -1,13 +1,14 @@
 let cart = [];// bos listdi hansiki sebetdeki elementleri json kimim saxliyacaq
 let cartTotal = 0;//sebetin umumi total meblegi
+let productsList = [];
 
 document.addEventListener("DOMContentLoaded", function () {
 
-   const basket   = document.getElementById("basket");
+  const basket = document.getElementById("basket");
   const basketIcon = document.getElementById("basketIcon");
   basket.innerHTML = "";
 
-   basketIcon.addEventListener("click", function (event) {
+  basketIcon.addEventListener("click", function (event) {
     event.preventDefault();
 
     let html = `
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </button>
       </div>`;
 
-    basket.innerHTML = html; 
+    basket.innerHTML = html;
   });
 
   fetch("https://fakestoreapi.com/products")
@@ -48,6 +49,22 @@ document.addEventListener("DOMContentLoaded", function () {
       productContainer.innerHTML = "";
 
       data.forEach(product => {
+
+        productsList.push(
+          {
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            description: product.description,
+            category: product.category,
+            image: product.image,
+            rating: {
+              rate: product.rate,
+              count: product.count
+            }
+          }
+        );
+        console.log()
         productContainer.innerHTML += `
         <div class="card position-relative">
                 <a href="single-product.html"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
@@ -115,6 +132,51 @@ function CreateRateElement(rate) {
   }
   return rateElements;
 };
+
+
+//search bar hissesini yazaq ;/
+document.addEventListener("DOMContentLoaded", function () {
+  const productContainer = document.getElementById("productCont");
+
+  // Your fetch and render products code here...
+
+  const searchMark = document.getElementById("category");
+  const inputSearchBar = document.getElementById("inputSearchBar");
+
+  searchMark.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    const inputValue = inputSearchBar.value.toLowerCase();
+    productContainer.innerHTML = "";  // Now productContainer is defined
+
+    productsList.forEach(product => {
+      if (product.title.toLowerCase().includes(inputValue)) {
+        productContainer.innerHTML += `
+          <div class="card position-relative">
+            <a href="single-product.html"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
+            <div class="card-body p-0">
+              <a href="single-product.html">
+                <h3 class="card-title pt-4 m-0">${product.title}</h3>
+              </a>
+              <div class="card-text">
+                ${CreateRateElement(product.rating.rate)}
+                <span class="rating secondary-font">${product.rating.rate}</span>
+                <h3 class="secondary-font text-primary">$ ${product.price}</h3>
+                <div class="d-flex flex-wrap mt-3">
+                  <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3" data-id="${product.id}">
+                    <h5 class="text-uppercase m-0">Add to Cart</h5>
+                  </a>
+                  <a href="#" class="btn-wishlist px-4 pt-3 ">
+                    <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }
+    });
+  });
+});
 
 
 
