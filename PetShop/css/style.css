@@ -406,6 +406,7 @@ a.categories-item:hover iconify-icon.category-icon {
 }
 
 
+
 #productCont {
   display: inline-flex;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
