@@ -1,33 +1,17 @@
-document.addEventListener("DOMContentLoaded",function() {
-    const productContHome=document.getElementById("productContHome");
+document.addEventListener("DOMContentLoaded", function () {
+  const productContHome = document.getElementById("productContHome");
 
-    fetch("https://fakestoreapi.com/products")
+  fetch("https://fakestoreapi.com/products")
     .then((res) => res.json())
     .then((data) => {
 
       productContHome.innerHTML = " ";
 
       data.forEach(product => {
-
-        // productsList.push(
-        //   {
-        //     id: product.id,
-        //     title: product.title,
-        //     price: product.price,
-        //     description: product.description,
-        //     category: product.category,
-        //     image: product.image,
-        //     rating: {
-        //       rate: product.rating.rate,
-        //       count: product.rating.count
-        //     }
-        //   }
-        // );
-
         productContHome.innerHTML += `
         <div class="col-md-3 my-3">
       <div class="card position-relative h-100">
-        <a href="single-product.html">
+        <a href="single-product.html?id=${product.id}">
           <img src="${product.image}" class="img-fluid rounded-4" alt="image">
         </a>
         <div class="card-body p-0">
@@ -50,25 +34,8 @@ document.addEventListener("DOMContentLoaded",function() {
         </div>
       </div>
     </div>`;
-        
+
       });
-
-    //   document.querySelectorAll(".btn-cart").forEach(button => {
-    //     button.addEventListener("click", function (event) {
-    //       event.preventDefault();
-    //       const id = this.getAttribute("data-id"); // Get the product ID from button
-    //       const product = productsList.find(p => p.id == id); // Find product by ID
-    //       cart.push({
-    //         id: product.id,
-    //         title: product.title,
-    //         price: product.price
-    //       });
-    //       cartTotal += product.price;
-
-    //       console.log(cartTotal);
-    //       saveCartToLocalStorage();
-    //     });
-    //   });
     });
 });
 

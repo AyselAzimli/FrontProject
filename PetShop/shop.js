@@ -1,8 +1,7 @@
-let cart = [];// bos listdi hansiki sebetdeki elementleri json kimim saxliyacaq
-let cartTotal = 0;//sebetin umumi total meblegi
+let cart = [];
+let cartTotal = 0;
 let productsList = [];
-let allProducts = [];//gonna be same as productlist amma istf edecem sortdaki originala hecne olmasin  
-
+let allProducts = [];
 
 document.addEventListener("DOMContentLoaded", function () {
   loadCartFromLocalStorage();
@@ -10,19 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const filterLess50 = document.getElementById("lessThan50");
   const filterMore50 = document.getElementById("moreThan50");
-
-
-  //category yazaq
   const menClothing = document.getElementById("menClothing");
   const womenClothing = document.getElementById("womenClothing");
   const jewelery = document.getElementById("jewelery");
   const electronics = document.getElementById("electronics");
-
-  const basket = document.getElementById("basket");//sebetin icidi div 
-  const basketIcon = document.getElementById("basketIcon");//ustune basanda bas vermelidir her sey
-
-  //sorting yazaq
-const sortSelect = document.getElementById("sortSelect");
+  const basket = document.getElementById("basket");
+  const basketIcon = document.getElementById("basketIcon");
+  const sortSelect = document.getElementById("sortSelect");
 
 
   let isFiltering = false;
@@ -39,7 +32,6 @@ const sortSelect = document.getElementById("sortSelect");
     const data = await fetch(url).then(r => r.json());
 
 
-    // ---- APPEND instead of replace ----
     productContainer.insertAdjacentHTML(
       'beforeend',
       data.map(buildItem).join('')
@@ -117,18 +109,15 @@ const sortSelect = document.getElementById("sortSelect");
 
   basketIcon.addEventListener("click", (event) => {
     event.preventDefault();
- renderBasket();      
+    renderBasket();
   });
 
-  
   fetch("https://fakestoreapi.com/products")
     .then((res) => res.json())
     .then((data) => {
 
       productContainer.innerHTML = " ";
-
       data.forEach(product => {
-
         productsList.push(
           {
             id: product.id,
@@ -164,7 +153,7 @@ const sortSelect = document.getElementById("sortSelect");
                 <div class="swiper-wrapper">
           <div class="swiper-slide">
         <div class="card position-relative">
-                <a href="single-product.html"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
+                <a href="single-product.html?id=${product.id}"><img src="${product.image}" class="img-fluid rounded-4" alt="image"></a>
                 <div class="card-body p-0">
                   <a href="single-product.html">
                     <h3 class="card-title pt-4 m-0"> ${product.title.length > 30 ? product.title.slice(0, 30) + '...' : product.title}</h3>
@@ -196,7 +185,6 @@ const sortSelect = document.getElementById("sortSelect");
 
       });
 
-
       document.querySelectorAll(".btn-cart").forEach(button => {
         button.addEventListener("click", function (event) {
           event.preventDefault();
@@ -215,76 +203,76 @@ const sortSelect = document.getElementById("sortSelect");
       });
     });
 
-//Sorting Elements extra thing tooo :)
+  //Sorting Elements extra thing tooo :)
 
-sortSelect.addEventListener('change',(event) =>{
+  sortSelect.addEventListener('change', (event) => {
 
-  isFiltering = true;
-  const value = sortSelect.value;
-  if (value === "lowToHigh") {
-      productContainer.innerHTML=" ";
+    isFiltering = true;
+    const value = sortSelect.value;
+    if (value === "lowToHigh") {
+      productContainer.innerHTML = " ";
 
-    emptyStringSortPriceAsc="";
-    SortByPriceAsc(allProducts).forEach(product =>{
-      emptyStringSortPriceAsc+= buildItem(product);
-    })
-  productContainer.innerHTML=emptyStringSortPriceAsc;
+      emptyStringSortPriceAsc = "";
+      SortByPriceAsc(allProducts).forEach(product => {
+        emptyStringSortPriceAsc += buildItem(product);
+      })
+      productContainer.innerHTML = emptyStringSortPriceAsc;
 
-  }
-  else if(value==="highToLow"){
-      productContainer.innerHTML=" ";
+    }
+    else if (value === "highToLow") {
+      productContainer.innerHTML = " ";
 
-    emptyStringSortPriceDesc="";
-    SortByPriceAsc(allProducts).reverse().forEach(product =>{
-      emptyStringSortPriceDesc+= buildItem(product);
-    })
-  productContainer.innerHTML=emptyStringSortPriceDesc;
-  }
-  else if(value==="highestRate"){
-    productContainer.innerHTML=" ";
+      emptyStringSortPriceDesc = "";
+      SortByPriceAsc(allProducts).reverse().forEach(product => {
+        emptyStringSortPriceDesc += buildItem(product);
+      })
+      productContainer.innerHTML = emptyStringSortPriceDesc;
+    }
+    else if (value === "highestRate") {
+      productContainer.innerHTML = " ";
 
-    emptyStringSortRateAsc="";
-    SortByRatingAsc(allProducts).forEach(product =>{
-      emptyStringSortRateAsc+= buildItem(product);
-    })
-  productContainer.innerHTML=emptyStringSortRateAsc;
+      emptyStringSortRateAsc = "";
+      SortByRatingAsc(allProducts).forEach(product => {
+        emptyStringSortRateAsc += buildItem(product);
+      })
+      productContainer.innerHTML = emptyStringSortRateAsc;
 
-  }
-  else if(value==="lowestRate"){
-    productContainer.innerHTML=" ";
+    }
+    else if (value === "lowestRate") {
+      productContainer.innerHTML = " ";
 
-    emptyStringSortRateDesc="";
-    SortByRatingAsc(allProducts).reverse().forEach(product =>{
-      emptyStringSortRateDesc+= buildItem(product);
-    })
-  productContainer.innerHTML=emptyStringSortRateDesc;
-  }
-  document.querySelectorAll(".btn-cart").forEach(button => {
-        button.addEventListener("click", function (event) {
-          event.preventDefault();
-          const id = this.getAttribute("data-id"); // Get the product ID from button
-          const product = productsList.find(p => p.id == id); // Find product by ID
-          cart.push({
-            id: product.id,
-            title: product.title,
-            price: product.price
-          });
-          cartTotal += product.price;
-
-          console.log(cartTotal);
-          saveCartToLocalStorage();
+      emptyStringSortRateDesc = "";
+      SortByRatingAsc(allProducts).reverse().forEach(product => {
+        emptyStringSortRateDesc += buildItem(product);
+      })
+      productContainer.innerHTML = emptyStringSortRateDesc;
+    }
+    document.querySelectorAll(".btn-cart").forEach(button => {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        const id = this.getAttribute("data-id"); // Get the product ID from button
+        const product = productsList.find(p => p.id == id); // Find product by ID
+        cart.push({
+          id: product.id,
+          title: product.title,
+          price: product.price
         });
+        cartTotal += product.price;
+
+        console.log(cartTotal);
+        saveCartToLocalStorage();
       });
-});
+    });
+  });
 
   const searchMark = document.getElementById("searchMark");
   const inputSearchBar = document.getElementById("inputSearchBar");
 
   searchMark.addEventListener("click", (event) => {
     event.preventDefault();
-    isFiltering = true;
+    isFiltering = true;//bunu eleyiremki infinte scroll olmasin
     const inputValue = inputSearchBar.value.toLowerCase();
-    productContainer.innerHTML = "";  // Now productContainer is defined
+    productContainer.innerHTML = ""; 
 
     productsList.forEach(product => {
       if (product.title.toLowerCase().includes(inputValue)) {
@@ -366,8 +354,6 @@ sortSelect.addEventListener('change',(event) =>{
 
   });
 
-
-
   filterMore50.addEventListener('click', (event) => {
     event.preventDefault();
     isFiltering = true;
@@ -417,10 +403,14 @@ sortSelect.addEventListener('change',(event) =>{
   if (!event.target.classList.contains("btn-delete")) return;
 
   const idToDelete = Number(event.target.dataset.id);
-  cart = cart.filter(item => item.id !== idToDelete);
-  cartTotal = cart.reduce((sum, p) => sum + p.price, 0);
-  saveCartToLocalStorage();
-  renderBasket(); 
+  const indexToRemove = cart.findIndex(item => item.id === idToDelete);
+
+  if (indexToRemove !== -1) {
+    cart.splice(indexToRemove, 1); 
+    cartTotal = cart.reduce((sum, p) => sum + p.price, 0);
+    saveCartToLocalStorage();
+    renderBasket();
+  }
 });
 
 });
@@ -464,7 +454,7 @@ function loadCartFromLocalStorage() {
 
 function attachCartListeners() {
   document.querySelectorAll(".btn-cart").forEach(button => {
-    button.addEventListener("click", { once: true },function (event) {
+    button.addEventListener("click", { once: true }, function (event) {
       event.preventDefault();
       const id = this.getAttribute("data-id");
       const product = productsList.find(p => p.id == id);
@@ -480,14 +470,13 @@ function attachCartListeners() {
   });
 }
 
-
 function buildItem(product) {
   return `
     <div class="col-md-3 my-6">
       <div class="swiper-wrapper">
         <div class="swiper-slide">
           <div class="card position-relative">
-            <a href="single-product.html">
+            <a href="single-product.html?id=${product.id}">
               <img src="${product.image}" class="img-fluid rounded-4" alt="image">
             </a>
             <div class="card-body p-0">
@@ -514,12 +503,12 @@ function buildItem(product) {
     </div>`;
 }
 
-function SortByPriceAsc(list) {
+function SortByPriceAsc(list) { //buble sort edrem
   let n = list.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
       if (list[j].price > list[j + 1].price) {
-        
+
         let temp = list[j];
         list[j] = list[j + 1];
         list[j + 1] = temp;
@@ -534,7 +523,7 @@ function SortByRatingAsc(list) {
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
       if (list[j].rating.rate > list[j + 1].rating.rate) {
-        
+
         let temp = list[j];
         list[j] = list[j + 1];
         list[j + 1] = temp;

@@ -1,22 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const url = new URL(window.location.href);
-    const id = url.searchParams.get("id");
-    console.log(id);
+  const url = new URL(window.location.href);
+  const id = url.searchParams.get("id");
 
-    fetch(`https://fakestoreapi.com/products/${id}`)
-        .then(res => res.json())
-        
-        .then(products => {
-                for (let product of products) {
-                    console.log(product);
-                    if (product.id == id) {
+  fetch(`https://fakestoreapi.com/products/${id}`)
+    .then((res) => res.json())
 
-                        document.getElementById("selling-product").innerHTML = `
+    .then(product => {
+
+      document.getElementById("selling-product").innerHTML = `
         <div class="container my-md-5 py-5">
           <div class="row g-md-5">
             <div class="col-lg-6">
               <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-9" >
                   <div class="swiper product-large-slider">
                     <div class="swiper-wrapper">
                       <div class="swiper-slide">
@@ -78,49 +74,45 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
         </div>`;
-                    }
-                }
 
+      document.getElementById("addToCartBtn").addEventListener("click", function (event) {
+        event.preventDefault();
+        const quantity = parseInt(document.getElementById("quantity").value);
 
-                document.getElementById("addToCartBtn").addEventListener("click", function (event) {
-                    event.preventDefault();
-                    const quantity = parseInt(document.getElementById("quantity").value);
+        let cart = JSON.parse(localStorage.getItem("cart"));
+        let cartTotal = parseFloat(localStorage.getItem("cartTotal"));
 
-                    let cart = JSON.parse(localStorage.getItem("cart"));
-                    let cartTotal = parseFloat(localStorage.getItem("cartTotal"));
-
-                    for (let i = 0; i < quantity; i++) {
-                        cart.push({
-                            id: product.id,
-                            title: product.title,
-                            price: product.price
-                        });
-                        cartTotal += product.price;
-                    }
-
-                    localStorage.setItem("cart", JSON.stringify(cart));
-                    localStorage.setItem("cartTotal", cartTotal.toFixed(2));
-
-                    alert(`${quantity} item(s) added to cart!`);
-                });
-            });
-        });
-
-    function CreateRateElement(rate) {
-        let rateElements = '';
-        let primary = Math.floor(rate);
-        let dif = rate - primary;
-        for (let i = 0; i < primary; i++) {
-            rateElements += '<iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>';
+        for (let i = 0; i < quantity; i++) {
+          cart.push({
+            id: product.id,
+            title: product.title,
+            price: product.price
+          });
+          cartTotal += product.price;
         }
 
-        if (dif > 0) {
-            rateElements += '<iconify-icon icon="clarity:half-star-solid" class="text-primary"></iconify-icon>';
-        }
+        localStorage.setItem("cart", JSON.stringify(cart));
+        localStorage.setItem("cartTotal", cartTotal.toFixed(2));
 
-        let empty = 5 - Math.ceil(rate);
-        for (let i = 0; i < empty; i++) {
-            rateElements += '<iconify-icon icon="clarity:star-line" class="text-primary"></iconify-icon>';
-        }
-        return rateElements;
-    };
+      });
+    });
+});
+
+function CreateRateElement(rate) {
+  let rateElements = '';
+  let primary = Math.floor(rate);
+  let dif = rate - primary;
+  for (let i = 0; i < primary; i++) {
+    rateElements += '<iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>';
+  }
+
+  if (dif > 0) {
+    rateElements += '<iconify-icon icon="clarity:half-star-solid" class="text-primary"></iconify-icon>';
+  }
+
+  let empty = 5 - Math.ceil(rate);
+  for (let i = 0; i < empty; i++) {
+    rateElements += '<iconify-icon icon="clarity:star-line" class="text-primary"></iconify-icon>';
+  }
+  return rateElements;
+};
